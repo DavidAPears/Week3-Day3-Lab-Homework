@@ -25,10 +25,30 @@ class Artist
     @id = new_artist[0]['id'].to_i
   end
 
+  def self.all()
+    sql = "SELECT * FROM artists"
+    artists = SqlRunner.run(sql)
+    return artists.map {|artists| Artist.new(artists) }
+  end
 
+  def select_artist_by_album()
+    sql = "SELECT * FROM artists WHERE id = $1"
+    values = [@id]
+    artist_by_album = SqlRunner.run(sql, values)
+    return artist_by_album.map {|artist| Album.new(artist)}
+  end
 
+  def self.delete_all()
+    sql = "DELETE FROM artists"
+    deleted_artsits = SqlRunner.run(sql)
+  end
 
-
+  def albums()
+    sql = "SELECT * FROM albums WHERE artist_id = $1"
+    values = [@id]
+    albums = SqlRunner.run(sql, values)
+    return albums.map{|album| Album.new(album)}
+  end
 # #
 #   def self.delete_all()
 #     db = PG.connect({ dbname: 'pizza_shop', host: 'localhost' })
