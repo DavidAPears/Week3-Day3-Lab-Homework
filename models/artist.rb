@@ -20,9 +20,9 @@ class Artist
       $1
     )
     RETURNING id"
-    values = [@artist_id, @artist_name]
+    values = [@artist_name]
     new_artist = SqlRunner.run(sql, values)
-    @artist_id = new_artist[0]['id'].to_i
+    @id = new_artist[0]['id'].to_i
   end
 
 

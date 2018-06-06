@@ -13,24 +13,31 @@ class Album
     @id = options['id'].to_i if options['id']
   end
 
+  def save()
+    sql = "INSERT INTO albums
+    (
+      album_name,
+      genre
+    ) VALUES
+    (
+      $1, $2
+    )
+    RETURNING id"
+    values = [@album_name, @genre]
+    new_album = SqlRunner.run(sql, values)
+    @id = new_album[0]['id'].to_i
+  end
+
+  def self.all()
+    sql = "SELECT * FROM albums"
+    albums = SqlRunner.run(sql)
+    return albums.map {|albums| Album.new(albums) }
+  end
+
+
 end
-  # def save()
-  #   db = PG.connect({ dbname: 'pizza_shop', host: 'localhost' })
-  #   sql = "INSERT INTO pizza_orders
-  #   (
-  #     topping,
-  #     quantity,
-  #     customer_id
-  #   ) VALUES
-  #   (
-  #     $1, $2, $3
-  #   )
-  #   RETURNING id"
-  #   values = [@topping, @quantity, @customer_id]
-  #   db.prepare("save", sql)
-  #   @id = db.exec_prepared("save", values)[0]["id"].to_i
-  #   db.close()
-  # end
+
+
   #
   # def self.delete_all()
   #   db = PG.connect({ dbname: 'pizza_shop', host: 'localhost' })
